@@ -8,7 +8,7 @@ app = FastAPI()
 async def home():
     msg = {
         'message': 'This is home of policy tracka project prototype server',
-        'api_endpoints': ['cluster_groups', 'cluster', 'treemap'], # please add more endpoints here as you add them
+        'api_endpoints': ['cluster_groups', 'cluster', 'treemap', 'wordcloud'], # please add more endpoints here as you add them
     }
     result = JSONResponse(content=msg)
     return result

@@ -9,6 +9,9 @@ import json
 from tqdm import tqdm
 from sklearn.cluster import KMeans
 import numpy as np
+import base64
+import os
+
 
 docs = pd.read_csv('datasets/Open source [WeVis-Promise Tracker] Data - promise.csv')
 vectorizer = TfidfVectorizer(tokenizer=word_tokenize)
@@ -124,6 +127,14 @@ def get_treemap():
         }
         data.append(children)
     return data
+
+def get_wordcloud():
+    # read file from cache as base64
+    cache = './cache/wordcloud.svg'
+    if os.path.exists(cache):
+        with open(cache, 'rb') as f:
+            base64_encoded = base64.b64encode(f.read())
+            return str(base64_encoded)
 
 if __name__ == '__main__':
     # print(type(get_cluster_groups(return_id=False)))
