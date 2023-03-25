@@ -90,7 +90,7 @@ def get_topic_of(group: list, bigram=False) -> str:
     kw = list(set(all_word_gram))
     return kw
 
-def get_cluster_kmean(doc_matrix):
+def get_cluster_kmean():
     kmeans = KMeans(n_clusters=24)
     clustered_docs = kmeans.fit_predict(doc_matrix)
     newdf = pd.DataFrame(columns=['data','party','label_clusters'],data=np.array([docs['promiseTitle'].values,docs['party'].values,clustered_docs]).T)
@@ -112,6 +112,19 @@ def get_cluster_kmean(doc_matrix):
         subdict['policy'] = policy
         mk_list.append(subdict)
     return mk_list        
+
+def get_treemap():
+    k_cluster = get_cluster_kmean()
+    data = []
+    for cluster in range(len(k_cluster)):
+        name = ' '.join(k_cluster[cluster]['group'])
+        size = len(k_cluster[cluster]['policy'])
+        children = {
+            'name': name,
+            'value': size,
+        }
+        data.append(children)
+    return data
 
 if __name__ == '__main__':
     # print(type(get_cluster_groups(return_id=False)))
