@@ -59,9 +59,9 @@ def get_cluster_groups(return_id=False) -> list:
     return clusters
 
 def get_topic_of(group: list, bigram=False) -> str:
+    group = [x[0] for x in group]
     vectorizer = TfidfVectorizer(tokenizer=word_tokenize, ngram_range=(1, 2) if bigram else (1, 1))
     vectorizer.fit_transform(group)
-
     exclusion = [' ', '  ', '\n', '\t', '\xa0', '\u200b', '\u200b', '\u200b']
     # get top 3 words from each cluster
     all_words = []
@@ -96,10 +96,10 @@ def get_cluster_kmean(doc_matrix):
     all_df = newdf[newdf['label_clusters'] == 0]
     for i in range(1,24):
         all_df = all_df.append(newdf[newdf['label_clusters'] == i])
-        mk_list = []
+    mk_list = []
     for i in range(1,24):
         subdict = dict()
-        subdict['group'] = str(i)
+        subdict['group'] = get_topic_of(all_df[all_df['label_clusters'] == i][['data']].values.tolist())
         party = all_df[all_df['label_clusters'] == i][['party']].values
         title = all_df[all_df['label_clusters'] == i][['data']].values
         policy = []
