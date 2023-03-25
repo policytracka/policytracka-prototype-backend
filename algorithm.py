@@ -8,6 +8,7 @@ import glob
 import json
 from tqdm import tqdm
 from sklearn.cluster import KMeans
+import numpy as np
 
 docs = pd.read_csv('datasets/Open source [WeVis-Promise Tracker] Data - promise.csv')
 vectorizer = TfidfVectorizer(tokenizer=word_tokenize)
@@ -58,10 +59,7 @@ def get_cluster_groups(return_id=False) -> list:
     return clusters
 
 def get_topic_of(group: list, bigram=False) -> str:
-    if bigram:
-        vectorizer = TfidfVectorizer(tokenizer=word_tokenize, ngram_range=(1, 2))
-    else:
-        vectorizer = TfidfVectorizer(tokenizer=word_tokenize)
+    vectorizer = TfidfVectorizer(tokenizer=word_tokenize, ngram_range=(1, 2) if bigram else (1, 1))
     vectorizer.fit_transform(group)
 
     exclusion = [' ', '  ', '\n', '\t', '\xa0', '\u200b', '\u200b', '\u200b']
@@ -69,9 +67,9 @@ def get_topic_of(group: list, bigram=False) -> str:
     all_words = []
     for sentence in group:
         all_words.extend(word_tokenize(sentence))
-    all_words = [w for w in all_words if w not in stopwords]
+    all_words = [w for w in all_words if w[0] not in stopwords]
     all_words = [w for w in all_words if len(w) > 1]
-    all_words = [w for w in all_words if w not in exclusion]
+    all_words = [w for w in all_words if w[0] not in exclusion]
 
     # get top 3 words by tf-idf
     tfidf = vectorizer.transform(group)
@@ -117,3 +115,8 @@ if __name__ == '__main__':
     #         print('-'*20)
     # print(get_topic_of())
     print(get_cluster_kmean(doc_matrix))
+    # for cluster_id, data in enumerate(get_cluster_groups(return_id=False)['data']):
+    #     if len(data) > 1:
+    #         print(' '.join(get_topic_of(data, bigram=True)))
+    #         print('-'*20)
+    # # print
