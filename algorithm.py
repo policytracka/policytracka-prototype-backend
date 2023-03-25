@@ -145,6 +145,10 @@ def get_treemap():
             'value': size,
         }
         data.append(children)
+    # normalize value to 100
+    total = sum([d['value'] for d in data])
+    for d in data:
+        d['value'] = d['value'] / total * 100
     return data
 
 def get_wordcloud():
