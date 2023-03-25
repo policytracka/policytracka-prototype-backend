@@ -103,7 +103,7 @@ def get_topic_of(group: list, bigram=False) -> str:
     return kw
 
 def get_cluster_kmean():
-    kmeans = KMeans(n_clusters=24)
+    kmeans = KMeans(n_clusters=24, random_state=0)
     clustered_docs = kmeans.fit_predict(doc_matrix)
     newdf = pd.DataFrame(columns=['data','party','label_clusters'],data=np.array([docs['promiseTitle'].values,docs['party'].values,clustered_docs]).T)
     all_df = newdf[newdf['label_clusters'] == 0]
@@ -124,6 +124,14 @@ def get_cluster_kmean():
         subdict['policy'] = policy
         mk_list.append(subdict)
     return mk_list        
+
+def cluster_from_group(group: str) -> list:
+    clusters = get_cluster_kmean()
+    for cluster in clusters:
+        if ''.join(sorted(group.split(' '))) == ''.join(sorted(cluster['group'])):
+            return cluster['policy']
+    return []
+
 
 def get_treemap():
     k_cluster = get_cluster_kmean()

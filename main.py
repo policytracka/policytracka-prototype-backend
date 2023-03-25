@@ -8,7 +8,7 @@ app = FastAPI()
 async def home():
     msg = {
         'message': 'This is home of policy tracka project prototype server',
-        'api_endpoints': ['cluster_groups', 'cluster', 'treemap', 'wordcloud'], # please add more endpoints here as you add them
+        'api_endpoints': ['cluster_groups', 'cluster', 'treemap', 'wordcloud', 'cluster_from_group'], # please add more endpoints here as you add them
     }
     result = JSONResponse(content=msg)
     return result
@@ -28,6 +28,26 @@ async def cluster(policy: str):
     msg = {
         'message': 'cluster',
         'cluster': algorithm.get_cluster_of(policy, return_id=False), # temp
+    }
+    result = JSONResponse(content=msg)
+    return result
+
+@app.get("/api/cluster_from_group")
+async def cluster_from_group(group: str):
+    data = algorithm.cluster_from_group(group)
+    if len(data) == 0:
+        msg = {
+            'message': 'no_cluster_in_this_group',
+            'cluster': {},
+        }
+        result = JSONResponse(content=msg)
+        return result
+    msg = {
+        'message': 'cluster_in_this_group',
+        'group': {
+            'name': group,
+            'data': data,
+        }
     }
     result = JSONResponse(content=msg)
     return result
