@@ -80,7 +80,14 @@ def get_topic_of(group: list, bigram=False) -> str:
     tfidf = sorted(tfidf.items(), key=lambda x: x[1], reverse=True)
     tfidf = tfidf[:10]
     tfidf = [w[0] for w in tfidf if w[0] not in stopwords and w[0] not in exclusion]
-    return tfidf[:2]
+    all_word_gram = []
+    for ngram in tfidf:
+        all_word_gram.extend(ngram.split(' '))
+    all_word_gram = [w for w in all_word_gram if w not in stopwords]
+    all_word_gram = [w for w in all_word_gram if len(w) > 1]
+    all_word_gram = [w for w in all_word_gram if w not in exclusion]
+    kw = list(set(all_word_gram))
+    return kw
 
 def get_cluster_kmean(doc_matrix):
     kmeans = KMeans(n_clusters=24)
