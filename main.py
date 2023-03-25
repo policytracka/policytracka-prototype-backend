@@ -33,7 +33,8 @@ async def cluster(policy: str):
     return result
 
 @app.get("/api/cluster_from_group")
-async def cluster_from_group(group: str):
+async def cluster_from_group(group: int):
+    group = algorithm.get_treemap()[group]['name']
     data = algorithm.cluster_from_group(group)
     if len(data) == 0:
         msg = {
