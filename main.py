@@ -27,7 +27,7 @@ async def cluster_groups():
 async def cluster(policy: str):
     msg = {
         'message': 'cluster',
-        'cluster': algorithm.get_cluster_of(policy), # temp
+        'cluster': algorithm.get_cluster_of(policy, return_id=False), # temp
     }
     result = JSONResponse(content=msg)
     return result
