@@ -2,10 +2,12 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from pythainlp import sent_tokenize, word_tokenize
 from pythainlp.corpus import thai_stopwords
+import numpy as np
 import pandas as pd
 import glob
 import json
 from tqdm import tqdm
+from sklearn.cluster import KMeans
 
 docs = pd.read_csv('datasets/Open source [WeVis-Promise Tracker] Data - promise.csv')
 vectorizer = TfidfVectorizer(tokenizer=word_tokenize)
@@ -82,12 +84,36 @@ def get_topic_of(group: list, bigram=False) -> str:
     tfidf = [w[0] for w in tfidf if w[0] not in stopwords and w[0] not in exclusion]
     return tfidf[:2]
 
+def get_cluster_kmean(doc_matrix):
+    kmeans = KMeans(n_clusters=24)
+    clustered_docs = kmeans.fit_predict(doc_matrix)
+    newdf = pd.DataFrame(columns=['data','party','label_clusters'],data=np.array([docs['promiseTitle'].values,docs['party'].values,clustered_docs]).T)
+    all_df = newdf[newdf['label_clusters'] == 0]
+    for i in range(1,24):
+        all_df = all_df.append(newdf[newdf['label_clusters'] == i])
+        mk_list = []
+    for i in range(1,24):
+        subdict = dict()
+        subdict['group'] = str(i)
+        party = all_df[all_df['label_clusters'] == i][['party']].values
+        title = all_df[all_df['label_clusters'] == i][['data']].values
+        policy = []
+        for i in range(len(party)):
+            policy_dict = dict()
+            policy_dict['party'] = party[i][0]
+            policy_dict['title'] = title[i][0]
+            policy.append(policy_dict)
+        subdict['policy'] = policy
+        mk_list.append(subdict)
+    return mk_list        
+
 if __name__ == '__main__':
     # print(type(get_cluster_groups(return_id=False)))
     # print(get_cluster_of('สร้างโรงเรียนให้เด็กได้เรียนภาษาอังกฤษ', return_id=False))
-    for cluster_id, data in enumerate(get_cluster_groups(return_id=False)['data']):
-        if len(data) > 1:
-            print(' '.join(get_topic_of(data, bi)))
-            print(data)
-            print('-'*20)
+    # for cluster_id, data in enumerate(get_cluster_groups(return_id=False)['data']):
+    #     if len(data) > 1:
+    #         print(' '.join(get_topic_of(data, bi)))
+    #         print(data)
+    #         print('-'*20)
     # print(get_topic_of())
+    print(get_cluster_kmean(doc_matrix))
