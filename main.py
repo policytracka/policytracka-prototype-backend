@@ -2,8 +2,18 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import algorithm # all data processing and clustering algorithms will be in this file
+import uvicorn
 
+## allow CORS
+origins = ['*']
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 @app.get("/")
 async def home():
     msg = {
@@ -79,3 +89,6 @@ async def political_party(id: int):
     }
     result = JSONResponse(content=msg)
     return result
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)
