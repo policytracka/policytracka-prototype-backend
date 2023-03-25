@@ -58,6 +58,7 @@ def get_cluster_groups(return_id=False) -> list:
 
     return clusters
 
+
 def get_topic_of(group: list, bigram=False) -> str:
     group = [x[0] for x in group]
     vectorizer = TfidfVectorizer(tokenizer=word_tokenize, ngram_range=(1, 2) if bigram else (1, 1))
