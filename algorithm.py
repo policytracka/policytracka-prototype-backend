@@ -140,6 +140,7 @@ def get_treemap():
         name = ' '.join(k_cluster[cluster]['group'])
         size = len(k_cluster[cluster]['policy'])
         children = {
+            'id': cluster,
             'name': name,
             'value': size,
         }
