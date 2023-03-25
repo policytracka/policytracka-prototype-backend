@@ -49,3 +49,12 @@ async def wordcloud():
     }
     result = JSONResponse(content=msg)
     return result
+
+@app.get("/api/political_party_icon")
+async def political_party(id: int):
+    msg = {
+        'message': 'political_party',
+        'img': algorithm.get_political_party_icon(id), # temp
+    }
+    result = JSONResponse(content=msg)
+    return result

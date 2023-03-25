@@ -137,6 +137,13 @@ def get_wordcloud():
             base64_encoded = base64.b64encode(f.read())
             return str(base64_encoded)
 
+def get_political_party_icon(id):
+    root = f'./assets/{id}'
+    # open file as base64
+    with open(f'{root}.png', 'rb') as f:
+        base64_encoded = base64.b64encode(f.read())
+        return str(base64_encoded)
+
 if __name__ == '__main__':
     # print(type(get_cluster_groups(return_id=False)))
     # print(get_cluster_of('สร้างโรงเรียนให้เด็กได้เรียนภาษาอังกฤษ', return_id=False))
