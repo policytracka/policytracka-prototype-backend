@@ -11,7 +11,7 @@ from sklearn.cluster import KMeans
 import numpy as np
 import base64
 import os
-
+from pythainlp.util import collate
 
 docs = pd.read_csv('datasets/Open source [WeVis-Promise Tracker] Data - promise.csv')
 # vectorizer = TfidfVectorizer(tokenizer=word_tokenize)
@@ -128,6 +128,9 @@ def get_cluster_kmean():
             policy.append(policy_dict)
         subdict['policy'] = policy
         mk_list.append(subdict)
+        # group topic word rearrange using collate
+        subdict['group'] = collate(subdict['group'])
+
     return mk_list        
 
 def cluster_from_group(group: str) -> list:
