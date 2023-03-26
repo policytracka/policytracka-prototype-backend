@@ -14,8 +14,12 @@ import os
 
 
 docs = pd.read_csv('datasets/Open source [WeVis-Promise Tracker] Data - promise.csv')
-vectorizer = TfidfVectorizer(tokenizer=word_tokenize)
-doc_matrix = vectorizer.fit_transform(docs['promiseTitle'].values)
+# vectorizer = TfidfVectorizer(tokenizer=word_tokenize)
+# doc_matrix = vectorizer.fit_transform(docs['promiseTitle'].values)
+# use sentence transformer to get vector
+from sentence_transformers import SentenceTransformer
+model = SentenceTransformer('paraphrase-MiniLM-L6-v2')
+doc_matrix = model.encode(docs['promiseTitle'].values)
 stopwords = list(thai_stopwords())
 
 def get_title_of(row_id: int) -> str:
@@ -23,7 +27,8 @@ def get_title_of(row_id: int) -> str:
     return select
 
 def get_cluster_of(x:str, return_id=True) -> list:
-    query = vectorizer.transform([x])
+    # query = vectorizer.transform([x])
+    query = model.encode([x])
     cluster = []
     for i in range(len(docs)):
         if cosine_similarity(query, doc_matrix[i]) > 0.35:
@@ -177,7 +182,13 @@ if __name__ == '__main__':
     #         print(data)
     #         print('-'*20)
     # print(get_topic_of())
-    print(get_cluster_kmean(doc_matrix))
+    # for i in get_treemap():
+    for i in get_cluster_kmean():
+        print(i['group'])
+        print(len(i['policy']))
+        if i['group'][0].startswith('สร้าง'):
+            print(i['policy'])
+        # print(i)
     # for cluster_id, data in enumerate(get_cluster_groups(return_id=False)['data']):
     #     if len(data) > 1:
     #         print(' '.join(get_topic_of(data, bigram=True)))
