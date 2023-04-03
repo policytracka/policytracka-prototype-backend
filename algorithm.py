@@ -13,7 +13,7 @@ import base64
 import os
 from pythainlp.util import collate
 
-docs = pd.read_csv('datasets/Open source [WeVis-Promise Tracker] Data - promise.csv')
+docs = pd.read_csv('datasets/policytrackadataset.csv')
 # vectorizer = TfidfVectorizer(tokenizer=word_tokenize)
 # doc_matrix = vectorizer.fit_transform(docs['promiseTitle'].values)
 # use sentence transformer to get vector
