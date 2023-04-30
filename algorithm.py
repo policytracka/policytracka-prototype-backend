@@ -31,7 +31,7 @@ def get_cluster_of(x:str, return_id=True) -> list:
     query = model.encode([x])
     cluster = []
     for i in range(len(docs)):
-        if cosine_similarity(query, doc_matrix[i]) > 0.35:
+        if cosine_similarity(query, doc_matrix[i].reshape(1, -1)) > 0.35:
             cluster.append(i) # use float to make it json serializable
 
     clusters = []
